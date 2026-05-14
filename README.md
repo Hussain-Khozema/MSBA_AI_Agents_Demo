@@ -39,7 +39,7 @@ layer)**, plus a working implementation of **A.5 unique_item_id regeneration**.
 | Data-quality logic   | Generic IsolationForest anomaly hunt              | Full Appendix A.6 D1..D8 decision rules + A.5 UID regeneration                      |
 | Corridors            | Single (Boston-only CSV)                          | Two (`C1_I95_NJ_BOS`, `C2_NJ_PHL`) with multi-waypoint weather                      |
 | Weather risk         | Single point, single score                        | Per-waypoint, max-aggregated to corridor/day, then 48h                              |
-| Allocation           | Done by LLM (narrative)                           | Deterministic ILP (PuLP/CBC) minimizing the §13 penalty model — provably optimal    |
+| Allocation           | Done by LLM (narrative)                           | Deterministic ILP (PuLP/CBC) minimizing the §13 penalty model    |
 | Audit / QA           | None                                              | 7 deterministic checks + LLM narrative wrapper (AuditorAgent)                       |
 | Report               | Generic HTML, hand-waved metrics                  | Strict no-hallucination guardrails, every number precomputed, CSS skeleton injected |
 | Tests                | One placeholder smoke test                        | 24 deterministic tests (0.4s runtime, zero LLM cost)                                |
