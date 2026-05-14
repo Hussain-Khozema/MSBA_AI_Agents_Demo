@@ -1,0 +1,7 @@
+day,resource_type,available_count,notes
+Day0,driver,6,Shared driver pool across corridors
+Day0,truck_standard,4,Standard trailers available
+Day0,truck_temp_controlled,2,Reefer units; binding constraint
+Day1,driver,6,Shared driver pool across corridors
+Day1,truck_standard,4,Standard trailers available
+Day1,truck_temp_controlled,2,Reefer units; binding constraint

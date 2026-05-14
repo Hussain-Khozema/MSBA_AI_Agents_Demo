@@ -1,0 +1,326 @@
+{
+  "item_master": [
+    {
+      "canonical_item_id": "RMD-100",
+      "item_id": 10021,
+      "canonical_item_name": "Remdesivir 100mg",
+      "medicine_type": "Antiviral",
+      "temp_control": "Cold (2-8C)",
+      "product_class": "Antiviral"
+    },
+    {
+      "canonical_item_id": "RMD-200",
+      "item_id": 10021,
+      "canonical_item_name": "Remdesivir 200mg",
+      "medicine_type": "Antiviral",
+      "temp_control": "Cold (2-8C)",
+      "product_class": "Antiviral"
+    },
+    {
+      "canonical_item_id": "INS-LIS",
+      "item_id": 10022,
+      "canonical_item_name": "Insulin Lispro",
+      "medicine_type": "Hormone",
+      "temp_control": "Cold (2-8C)",
+      "product_class": "Endocrine"
+    },
+    {
+      "canonical_item_id": "PMB-KEY",
+      "item_id": 10035,
+      "canonical_item_name": "Pembrolizumab",
+      "medicine_type": "Monoclonal Antibody",
+      "temp_control": "Cold (2-8C)",
+      "product_class": "Oncology Biologic"
+    },
+    {
+      "canonical_item_id": "EPI-AI",
+      "item_id": 10040,
+      "canonical_item_name": "Epinephrine Auto-Injector",
+      "medicine_type": "Emergency Drug",
+      "temp_control": "Room Temp (20-25C)",
+      "product_class": "Emergency"
+    },
+    {
+      "canonical_item_id": "HEP-SOD",
+      "item_id": 10050,
+      "canonical_item_name": "Heparin Sodium",
+      "medicine_type": "Anticoagulant",
+      "temp_control": "Room Temp (20-25C)",
+      "product_class": "Anticoagulant"
+    },
+    {
+      "canonical_item_id": "MOR-SUL",
+      "item_id": 10060,
+      "canonical_item_name": "Morphine Sulfate",
+      "medicine_type": "Opioid Analgesic",
+      "temp_control": "Controlled Storage",
+      "product_class": "Controlled"
+    },
+    {
+      "canonical_item_id": "ALB-INH",
+      "item_id": 10070,
+      "canonical_item_name": "Albuterol Inhaler",
+      "medicine_type": "Bronchodilator",
+      "temp_control": "Room Temp (20-25C)",
+      "product_class": "Respiratory"
+    },
+    {
+      "canonical_item_id": "EXP-ONC-CT",
+      "item_id": 99999,
+      "canonical_item_name": "Experimental Oncology Drug (Clinical Trial)",
+      "medicine_type": "Clinical Trial Drug",
+      "temp_control": "Strict Cold Chain (-20C)",
+      "product_class": "Clinical Trial"
+    },
+    {
+      "canonical_item_id": "LEV-INH",
+      "item_id": 10071,
+      "canonical_item_name": "Levalbuterol Inhaler",
+      "medicine_type": "Bronchodilator",
+      "temp_control": "Room Temp (20-25C)",
+      "product_class": "Respiratory"
+    },
+    {
+      "canonical_item_id": "INS-ASP",
+      "item_id": 10023,
+      "canonical_item_name": "Insulin Aspart",
+      "medicine_type": "Hormone",
+      "temp_control": "Cold (2-8C)",
+      "product_class": "Endocrine"
+    }
+  ],
+  "aliases": [
+    {
+      "alias_name": "Remdesivir 100 mg",
+      "canonical_item_id": "RMD-100",
+      "confidence_tier": "ALIAS_MATCH",
+      "notes": "Space variant"
+    },
+    {
+      "alias_name": "Remdesivir 200 mg",
+      "canonical_item_id": "RMD-200",
+      "confidence_tier": "ALIAS_MATCH",
+      "notes": "Space variant"
+    },
+    {
+      "alias_name": "Pembrolizumab (Keytruda)",
+      "canonical_item_id": "PMB-KEY",
+      "confidence_tier": "ALIAS_MATCH",
+      "notes": "Brand in parentheses"
+    },
+    {
+      "alias_name": "EpiPen Auto Injector",
+      "canonical_item_id": "EPI-AI",
+      "confidence_tier": "ALIAS_MATCH",
+      "notes": "Common brand phrasing"
+    },
+    {
+      "alias_name": "Heparin Na",
+      "canonical_item_id": "HEP-SOD",
+      "confidence_tier": "ALIAS_MATCH",
+      "notes": "Abbreviation"
+    },
+    {
+      "alias_name": "Morphine Sulphate",
+      "canonical_item_id": "MOR-SUL",
+      "confidence_tier": "ALIAS_MATCH",
+      "notes": "US/UK spelling"
+    },
+    {
+      "alias_name": "Albuterol Inhaler 90mcg",
+      "canonical_item_id": "ALB-INH",
+      "confidence_tier": "ALIAS_MATCH",
+      "notes": "Dose suffix ignored for inhaler class"
+    }
+  ],
+  "legacy_map": [
+    {
+      "legacy_item_id": 10020,
+      "canonical_item_id": "RMD-100",
+      "rule": "LEGACY_ID_MAP",
+      "rationale": "Vendor legacy ID for Remdesivir 100mg"
+    },
+    {
+      "legacy_item_id": 20021,
+      "canonical_item_id": "RMD-200",
+      "rule": "LEGACY_ID_MAP",
+      "rationale": "Old system used 200xx for strength variants"
+    },
+    {
+      "legacy_item_id": 1070,
+      "canonical_item_id": "ALB-INH",
+      "rule": "LEGACY_ID_MAP",
+      "rationale": "Truncated ID found in older CSV exports"
+    },
+    {
+      "legacy_item_id": 99999,
+      "canonical_item_id": "EXP-ONC-CT",
+      "rule": "SPECIAL_CASE",
+      "rationale": "Clinical trial placeholder ID; requires strict cold chain"
+    }
+  ],
+  "corridors": [
+    {
+      "corridor_id": "C1_I95_NJ_BOS",
+      "corridor_name": "NJ \u000214 Boston (I-95)",
+      "origin_dc": "Newark_NJ_DC",
+      "destination_region": "Boston_MA",
+      "default_sla_tier_label": "Tier 1",
+      "waypoints": [
+        {
+          "waypoint_id": "C1_W1",
+          "city": "Newark NJ",
+          "lat": 40.7357,
+          "lon": -74.1724
+        },
+        {
+          "waypoint_id": "C1_W2",
+          "city": "Bronx NY",
+          "lat": 40.8448,
+          "lon": -73.8648
+        },
+        {
+          "waypoint_id": "C1_W3",
+          "city": "New Haven CT",
+          "lat": 41.3083,
+          "lon": -72.9279
+        },
+        {
+          "waypoint_id": "C1_W4",
+          "city": "Providence RI",
+          "lat": 41.824,
+          "lon": -71.4128
+        },
+        {
+          "waypoint_id": "C1_W5",
+          "city": "Boston MA",
+          "lat": 42.3601,
+          "lon": -71.0589
+        }
+      ]
+    },
+    {
+      "corridor_id": "C2_NJ_PHL",
+      "corridor_name": "NJ \u000214 Philadelphia",
+      "origin_dc": "Newark_NJ_DC",
+      "destination_region": "Philadelphia_PA",
+      "default_sla_tier_label": "Tier 2",
+      "waypoints": [
+        {
+          "waypoint_id": "C2_W1",
+          "city": "Newark NJ",
+          "lat": 40.7357,
+          "lon": -74.1724
+        },
+        {
+          "waypoint_id": "C2_W2",
+          "city": "New Brunswick NJ",
+          "lat": 40.4862,
+          "lon": -74.4518
+        },
+        {
+          "waypoint_id": "C2_W3",
+          "city": "Trenton NJ",
+          "lat": 40.2204,
+          "lon": -74.7643
+        },
+        {
+          "waypoint_id": "C2_W4",
+          "city": "Philadelphia PA",
+          "lat": 39.9526,
+          "lon": -75.1652
+        }
+      ]
+    }
+  ],
+  "weather_thresholds": {
+    "heavy_precipitation_mm_day": 15.0,
+    "high_wind_gust_kmh": 45.0,
+    "freezing_temp_c": 0.0
+  },
+  "travel_buffer_by_risk": [
+    {
+      "risk_score": 0,
+      "buffer_pct": 0,
+      "escalation": false
+    },
+    {
+      "risk_score": 1,
+      "buffer_pct": 10,
+      "escalation": false
+    },
+    {
+      "risk_score": 2,
+      "buffer_pct": 25,
+      "escalation": false
+    },
+    {
+      "risk_score": 3,
+      "buffer_pct": 40,
+      "escalation": true
+    }
+  ],
+  "truck": {
+    "capacity_volume_units": 10,
+    "packing_inefficiency_buffer_pct": 10
+  },
+  "penalty_model": {
+    "tier1_sla_violation": 100,
+    "tier2_sla_violation": 40,
+    "cold_chain_violation_bonus": 80,
+    "non_sla_day_delay": 10
+  },
+  "sla_tiers": [
+    {
+      "sla_tier_label": "Tier 1",
+      "sla_tier_number": 1,
+      "medicine_category": "Life-critical",
+      "max_time_in_transit_hours": 6.0
+    },
+    {
+      "sla_tier_label": "Tier 2",
+      "sla_tier_number": 2,
+      "medicine_category": "Standard specialty",
+      "max_time_in_transit_hours": 12.0
+    }
+  ],
+  "uid_regex_rules": [
+    {
+      "product_class": "Antiviral",
+      "expected_regex": "^RMD-\\d{4}-\\d{4}$",
+      "example": "RMD-2026-0042",
+      "notes": "Year + 4-digit sequence"
+    },
+    {
+      "product_class": "Oncology Biologic",
+      "expected_regex": "^PMB-\\d{4}-\\d{5}$",
+      "example": "PMB-2026-00017",
+      "notes": "Year + 5-digit sequence"
+    },
+    {
+      "product_class": "Emergency",
+      "expected_regex": "^EPI-\\d{4}-\\d{4}$",
+      "example": "EPI-2026-0101",
+      "notes": "Year + 4-digit sequence"
+    },
+    {
+      "product_class": "Controlled",
+      "expected_regex": "^CTRL-\\d{4}-\\d{6}$",
+      "example": "CTRL-2026-000123",
+      "notes": "Year + 6-digit sequence"
+    },
+    {
+      "product_class": "Respiratory",
+      "expected_regex": "^INH-\\d{4}-\\d{5}$",
+      "example": "INH-2026-00234",
+      "notes": "Year + 5-digit sequence"
+    },
+    {
+      "product_class": "Clinical Trial",
+      "expected_regex": "^CT-\\d{4}-[A-Z0-9]{6}$",
+      "example": "CT-2026-A1B2C3",
+      "notes": "Randomized suffix"
+    }
+  ],
+  "extraction_notes": null
+}

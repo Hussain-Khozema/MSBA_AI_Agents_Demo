@@ -1,0 +1,22 @@
+# secrets
+.env
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# local stores
+chroma_db/
+*.sqlite
+*.db
+
+# generated reports
+output/
+
+# macOS
+.DS_Store
+
+# logs
+*.log

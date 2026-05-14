@@ -1,0 +1,147 @@
+@startuml SeeWeeS_MultiAgent_v2
+title SeeWeeS Multi-Corridor Dispatch System (v2)
+
+skinparam backgroundColor #FAFAFA
+skinparam shadowing false
+skinparam ArrowColor #333333
+skinparam ArrowFontStyle bold
+skinparam activity {
+  BackgroundColor #E3F2FD
+  BorderColor #1565C0
+  FontColor #0D47A1
+  DiamondBackgroundColor #FFF3E0
+  DiamondBorderColor #E65100
+  StartColor #2E7D32
+  EndColor #C62828
+}
+skinparam partition {
+  BackgroundColor #F5F5F5
+  BorderColor #9E9E9E
+  FontStyle bold
+}
+
+start
+
+partition "1. Context Extraction (LLM Agent)" #E8F5E9 {
+  :context_extraction
+  ----
+  ContextAgent reads the SeeWeeS
+  Specialty Dispatch Playbook (.md)
+  Emits a structured PlaybookExtraction:
+  * Item master (A.1)
+  * Aliases (A.2)
+  * Legacy ID map (A.3)
+  * Corridors + waypoints (Sec 3)
+  * Weather thresholds (Sec 6)
+  * Travel buffers (Sec 6)
+  * Truck model (Sec 8)
+  * Penalty model (Sec 13)
+  * UID regex rules (A.5)
+  Validated with pydantic + JSON-schema
+  Cached to extracted_context.json;
+}
+
+:load_playbook
+----
+Merge LLM extraction with
+hand-curated engineering
+augmentations (sla_tier,
+base_transit_hours, etc.);
+
+partition "2. Parallel Fan-Out (Deterministic Tools)" {
+  fork
+    :ingest <<tool>>
+    ----
+    Shipments CSV
+    DQ reconciler (A.6 D1..D8)
+    A.5 placeholder UID generation
+    Split History vs Planning Window;
+  fork again
+    :weather <<tool>>
+    ----
+    Open-Meteo per waypoint
+    (9 calls in parallel)
+    max(waypoints) -> day_risk
+    max(day0, day1) -> corridor_48h
+    SLA-breach detection
+    via weather buffer;
+  fork again
+    :resources <<tool>>
+    ----
+    Resource availability CSV
+    Drivers / std trucks / reefers
+    per Day0 / Day1;
+  end fork
+}
+
+:join (barrier)
+----
+Aligns parallel branches in
+one super-step before kpis
+prevents duplicate execution;
+
+:kpis <<tool>>
+----
+Per-corridor KPIs
+Period-over-Period vs history
+Tier 1 / Tier 2 mix
+Cold-chain volume;
+
+:allocate <<tool>>
+----
+Deterministic greedy solver
+Objective: minimize penalty
+  Tier1 SLA = 100
+  Tier2 SLA =  40
+  Cold-chain breach = +80
+  Day-late = 10
+Outputs: assignments per unit;
+
+partition "3. Compliance Audit (LLM Agent + Deterministic Checks)" #FCE4EC {
+  :audit
+  ----
+  7 deterministic checks:
+  * A-ESC-01 Escalation threshold
+  * A-WX-01  Weather SLA breach
+  * A-CC-01  Cold-chain integrity
+  * A-CAP-01 Capacity math
+  * A-TIER-01 SLA tier consistency
+  * A-UNSRV-01 Unserved high priority
+  * A-DQ-01  DQ regeneration usage
+  ----
+  AuditorAgent (LLM) layers
+  executive narrative on top:
+  * description (per finding)
+  * recommendation (per finding)
+  * overall headline + status;
+}
+
+partition "4. Reporting (LLM Agent)" #E1F5FE {
+  :report
+  ----
+  ReportAgent renders HTML
+  Inputs: every precomputed metric
+  + AuditReport
+  Strict no-hallucination prompt
+  CSS skeleton injected in prompt
+  Sections: Hero, Risks, Actions,
+  Corridor Comparison, Weather,
+  Allocation, Audit, DQ, Appendix;
+}
+
+:email <<tool>>
+----
+Optional SMTP delivery
+Skipped if REPORT_EMAIL_TO unset;
+
+stop
+
+legend right
+  | Color | Meaning |
+  |<#E8F5E9>| LLM Agent stage (Context) |
+  |<#FCE4EC>| LLM Agent stage (Auditor) |
+  |<#E1F5FE>| LLM Agent stage (Report) |
+  | <<tool>> | Deterministic Python (no LLM) |
+endlegend
+
+@enduml

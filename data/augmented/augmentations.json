@@ -1,0 +1,33 @@
+{
+  "_meta": {
+    "description": "Engineering augmentations layered on top of the LLM-extracted playbook content. This file contains ONLY decisions that are NOT in the SeeWeeS playbook; everything else flows from extracted_context.json.",
+    "rationale": "We deliberately keep these out of the LLM extraction step to avoid hallucination. They are reviewed by humans and version-controlled."
+  },
+  "corridor_augmentations": {
+    "C1_I95_NJ_BOS": {
+      "sla_tier": 1,
+      "max_transit_hours": 6,
+      "base_transit_hours": 5.0,
+      "rationale": "Playbook §7 ties tier to medicine category. For v1 we simplify: C1 carries primarily life-critical Boston oncology/MGH traffic so is treated as Tier 1 (6h cap). base_transit_hours estimated from highway distance (NJ->BOS ~ 220 mi at average truck speed)."
+    },
+    "C2_NJ_PHL": {
+      "sla_tier": 2,
+      "max_transit_hours": 12,
+      "base_transit_hours": 2.0,
+      "rationale": "C2 carries standard specialty traffic so is treated as Tier 2 (12h cap). base_transit_hours estimated from highway distance (NJ->PHL ~ 90 mi)."
+    }
+  },
+  "truck_augmentations": {
+    "effective_units_per_truck": 9,
+    "rationale": "Playbook §8: 10 capacity / 1.10 packing buffer = 9.09, floored to 9 to stay conservative."
+  },
+  "cold_chain_rule": {
+    "definition": "Any item whose temp_control field is NOT 'Room Temp (20-25C)' is treated as cold-chain and requires truck_temp_controlled.",
+    "rationale": "Playbook §9 (Medicine Master Reference) describes temp_control verbatim; this rule is the operational interpretation."
+  },
+  "data_quality_config": {
+    "enable_uid_regeneration_a5": true,
+    "generated_uid_format": "{prefix}-2026-GEN{seq:03d}",
+    "rationale": "Playbook Appendix A.5/A.6 D1 allow regex-based regeneration of missing unique_item_id values. We enable this so flagged units can still be dispatched. Generated UIDs use a clearly-marked placeholder format (RMD-2026-GEN001, INS-2026-GEN001, etc.) so they can never be confused with real inventory IDs."
+  }
+}

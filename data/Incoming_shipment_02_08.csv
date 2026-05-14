@@ -1,0 +1,11 @@
+item_id,item_name,unique_item_id,dispatch_location
+10021,Remdesivir 100mg,RMD-2026-0001,Boston-MGH
+10021,Remdesivir 100mg,RMD-2026-0002,Boston-MGH
+10022,Insulin Lispro,INS-2026-0101,Boston-BWH
+10022,Insulin Lispro,INS-2026-0102,Boston-BWH
+10035,Pembrolizumab,PBR-2026-1201,Boston-DanaFarber
+10021,Remdesivir 100mg,,Boston-MGH
+10022,Insulin Lispro,,Boston-BWH
+10021,Remdesivir 200mg,RMD-2026-0099,Boston-MGH
+99999,Experimental Oncology Drug,EXP-2026-7777,Boston-BWH
+10035,Pembrolizumab,PBR-2026-1201,Boston-MGH
