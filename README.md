@@ -39,7 +39,7 @@ layer)**, plus a working implementation of **A.5 unique_item_id regeneration**.
 | Data-quality logic   | Generic IsolationForest anomaly hunt              | Full Appendix A.6 D1..D8 decision rules + A.5 UID regeneration                      |
 | Corridors            | Single (Boston-only CSV)                          | Two (`C1_I95_NJ_BOS`, `C2_NJ_PHL`) with multi-waypoint weather                      |
 | Weather risk         | Single point, single score                        | Per-waypoint, max-aggregated to corridor/day, then 48h                              |
-| Allocation           | Done by LLM (narrative)                           | Deterministic Python greedy minimizing penalty score (Sec 13)                       |
+| Allocation           | Done by LLM (narrative)                           | Deterministic ILP (PuLP/CBC) minimizing the §13 penalty model — provably optimal    |
 | Audit / QA           | None                                              | 7 deterministic checks + LLM narrative wrapper (AuditorAgent)                       |
 | Report               | Generic HTML, hand-waved metrics                  | Strict no-hallucination guardrails, every number precomputed, CSS skeleton injected |
 | Tests                | One placeholder smoke test                        | 24 deterministic tests (0.4s runtime, zero LLM cost)                                |
@@ -95,7 +95,7 @@ everything else is deterministic Python.
 │       ├── weather_tools.py             # per-waypoint Open-Meteo, two-level aggregation
 │       ├── resource_loader.py           # 48h resource availability
 │       ├── kpi_engine.py                # corridor KPIs + period-over-period
-│       ├── allocator.py                 # deterministic greedy solver
+│       ├── allocator.py                 # deterministic ILP solver (PuLP/CBC)
 │       ├── auditor.py                   # 7 deterministic compliance checks
 │       └── email_tools.py               # SMTP delivery
 ├── tests/
@@ -160,9 +160,10 @@ What this does end-to-end:
   aggregates waypoint → day → 48h corridor risk score.
   - Resources: loads driver / truck / reefer availability for Day0 & Day1.
 4. Computes per-corridor KPIs + period-over-period trends.
-5. Runs the deterministic greedy allocator minimizing the playbook's penalty
-  model (Tier-1 SLA = 100, Tier-2 SLA = 40, cold-chain breach = +80,
-   day-late = 10).
+5. Runs the deterministic ILP allocator (PuLP + CBC) minimizing the
+   playbook's penalty model (Tier-1 SLA = 100, Tier-2 SLA = 40, cold-chain
+   breach = +80, day-late = 10). The MIP has ~70 binary variables and
+   ~14 constraints; CBC solves to provable optimality in <1 second.
 6. Runs **AuditorAgent**: 7 deterministic checks + LLM narrative.
 7. Runs **ReportAgent**: renders the HTML report under `output/report.html`.
 8. Optionally emails the report via SMTP.
@@ -324,10 +325,13 @@ warning being the A.5 UID regeneration usage.
 
 ## 10. Limitations & next steps
 
-- **Greedy allocator only.** An ILP version (e.g. `pulp` or `scipy.milp`)
-would be tractable here (33 units × 2 days) and could show "Plan A
-(greedy): 2840 penalty vs. Plan B (ILP): X penalty, chose B" — a stronger
-story for the report. Out of scope for v1.
+- **Penalty-model tie-break.** When the weather-induced violation penalty
+for serving a unit equals the full unserved penalty (which happens when
+buffer breaches SLA), the ILP would be indifferent between dispatching and
+not. We add a tiny `0.001` per-served epsilon to the objective so the
+solver prefers actually delivering medicine in those tied cases — the
+epsilon is too small to flip any non-tied decision but encodes the
+operational truth that "late beats missed."
 - **No cyclic audit loop.** The current audit is one-shot: it adds findings
 to the report rather than feeding violations back into a re-allocation
 step. The structural failures we observe (weather-induced SLA breach)
