@@ -209,11 +209,6 @@ suite verifies the system uses them correctly.
 
 ### SLA tier per corridor (mapping decision)
 
-The playbook (§7) ties SLA tier to *medicine category*. For v1 we simplified
-to a per-corridor mapping because the planning-window CSV is segregated by
-destination region:
-
-
 | Corridor        | SLA Tier | Max Transit | Base Transit (assumed) |
 | --------------- | -------- | ----------- | ---------------------- |
 | `C1_I95_NJ_BOS` | Tier 1   | 6h          | 5.0h                   |
