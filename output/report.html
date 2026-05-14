@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SeeWeeS Multi-Corridor Dispatch Report</title>
+</head>
+<body>
+<style>
+  :root {
+    --bg: #fafafa;
+    --card: #ffffff;
+    --ink: #1a1a1a;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #1e40af;
+    --warn: #b45309;
+    --danger: #b91c1c;
+    --ok: #15803d;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 8px rgba(0,0,0,0.04);
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: var(--bg); color: var(--ink); margin: 0; padding: 32px; }
+  section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+  section.hero { background: linear-gradient(135deg, #1e40af 0%, #312e81 100%); color: white; border: none; }
+  section.hero h1 { margin: 0 0 8px; font-size: 22px; }
+  section.hero .penalty { font-size: 36px; font-weight: 700; margin-top: 8px; }
+  section.hero .penalty .label { font-size: 13px; opacity: 0.8; font-weight: 400; }
+  h2 { font-size: 16px; margin: 0 0 16px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; }
+  ol.risks-list, ol.actions-list { padding-left: 22px; }
+  ol.risks-list li, ol.actions-list li { margin-bottom: 12px; line-height: 1.5; }
+  ol.risks-list li strong, ol.actions-list li strong { color: var(--accent); }
+  /* All report tables: center-aligned by default. We use !important so any
+     class="num" the LLM emits cannot override the alignment. */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+  th, td { padding: 10px 12px; text-align: center !important; border-bottom: 1px solid var(--border); vertical-align: middle; font-variant-numeric: tabular-nums; }
+  th { background: #f3f4f6; font-weight: 600; color: var(--muted); text-transform: uppercase; font-size: 11px; letter-spacing: 0.04em; }
+  /* Corridor comparison table: description column left-aligned for readable prose. */
+  section.corridor-table th:nth-child(1),
+  section.corridor-table td:nth-child(1) { width: 20%; font-weight: 600; }
+  section.corridor-table th:nth-child(2),
+  section.corridor-table td:nth-child(2) { width: 32%; color: var(--muted); font-size: 12px; line-height: 1.4; font-weight: 400; text-transform: none; letter-spacing: 0; text-align: left !important; }
+  section.corridor-table th:nth-child(3),
+  section.corridor-table th:nth-child(4),
+  section.corridor-table td:nth-child(3),
+  section.corridor-table td:nth-child(4) { width: 24%; font-variant-numeric: tabular-nums; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  .badge.ok { background: #dcfce7; color: var(--ok); }
+  .badge.warn { background: #fef3c7; color: var(--warn); }
+  .badge.danger { background: #fee2e2; color: var(--danger); }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 12px; }
+  .kpi { background: #f9fafb; border-radius: 8px; padding: 12px; }
+  .kpi .v { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .kpi .l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 4px; }
+  details { margin-top: 10px; }
+  summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+  .footnote { font-size: 11px; color: var(--muted); margin-top: 16px; }
+</style>
+
+<section class="hero">
+  <h1>Dispatch Report: Weather-driven SLA breach on NJ → Boston corridor</h1>
+  <div class="penalty"><span class="label">Total Penalty Score</span><br>2840</div>
+</section>
+
+<section class="risks">
+  <h2>Top 3 Risks</h2>
+  <ol class="risks-list">
+    <li><strong>Weather buffer causes SLA breach on NJ → Boston:</strong> Adjusted transit time is 6.25h vs 6.0h max, resulting in -0.25h headroom and a penalty of 1800 points.</li>
+    <li><strong>Cold-chain violation risk on NJ → Boston corridor:</strong> Weather conditions increase penalty by 1040 points due to cold-chain shipment sensitivity.</li>
+    <li><strong>Generated placeholder IDs in planning data:</strong> 3 rows use generated UIDs, requiring reconciliation before dispatch to avoid inventory mismatches.</li>
+  </ol>
+</section>
+
+<section class="actions">
+  <h2>Recommended Actions</h2>
+  <ol class="actions-list">
+    <li><strong>Adjust operations within 2 hours:</strong> Dispatch shipments earlier on Day 0, use alternate corridors, or pre-position inventory to reduce transit time below 6.0 hours SLA cap on NJ → Boston.</li>
+    <li><strong>Verify cold-chain shipment integrity:</strong> Ensure all temperature-controlled trucks maintain cold-chain protocols given weather risks on NJ → Boston corridor.</li>
+    <li><strong>Reconcile generated IDs:</strong> Before Day 0 dispatch, match 3 generated placeholder UIDs with physical inventory and investigate upstream data source to prevent missing IDs.</li>
+  </ol>
+</section>
+
+<section class="corridor-table">
+  <h2>Corridor Comparison</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>What it means</th>
+        <th>NJ → Boston (I-95)</th>
+        <th>NJ → Philadelphia</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Origin DC</td><td>Starting distribution center</td><td>Newark_NJ_DC</td><td>Newark_NJ_DC</td></tr>
+      <tr><td>Destination Region</td><td>Delivery region</td><td>Boston_MA</td><td>Philadelphia_PA</td></tr>
+      <tr><td>SLA Tier</td><td>Service level agreement priority</td><td>Tier 1</td><td>Tier 2</td></tr>
+      <tr><td class="num">Max Transit Hours</td><td>Maximum allowed transit time</td><td class="num">6</td><td class="num">12</td></tr>
+      <tr><td class="num">Base Transit Hours</td><td>Base transit time without buffers</td><td class="num">5.0</td><td class="num">2.0</td></tr>
+      <tr><td class="num">Adjusted Transit Hours</td><td>Base transit plus weather buffer</td><td class="num">6.25</td><td class="num">2.2</td></tr>
+      <tr><td>SLA Violation</td><td>Transit time exceeds SLA cap</td><td>Yes</td><td>No</td></tr>
+      <tr><td class="num">Headroom Hours</td><td>Safety margin vs SLA cap. Negative = breach.</td><td class="num">-0.25</td><td class="num">9.8</td></tr>
+      <tr><td class="num">Weather Risk (48h)</td><td>Max risk score in 48-hour forecast</td><td class="num">2</td><td class="num">1</td></tr>
+      <tr><td class="num">Buffer %</td><td>Transit time increase due to weather risk</td><td class="num">25</td><td class="num">10</td></tr>
+      <tr><td class="num">Planning Valid Units</td><td>Units scheduled for dispatch</td><td class="num">18</td><td class="num">15</td></tr>
+      <tr><td class="num">Planning Excluded Units</td><td>Units excluded from planning</td><td class="num">0</td><td class="num">0</td></tr>
+      <tr><td class="num">Day0 Units</td><td>Units planned for Day 0 dispatch</td><td class="num">10</td><td class="num">8</td></tr>
+      <tr><td class="num">Day1 Units</td><td>Units planned for Day 1 dispatch</td><td class="num">8</td><td class="num">7</td></tr>
+      <tr><td class="num">Tier-1 Units</td><td>High-priority units</td><td class="num">18</td><td class="num">0</td></tr>
+      <tr><td class="num">Tier-2 Units</td><td>Standard priority units</td><td class="num">0</td><td class="num">15</td></tr>
+      <tr><td class="num">Cold Chain Units</td><td>Units needing refrigerated trucks</td><td class="num">13</td><td class="num">9</td></tr>
+      <tr><td class="num">Room Temp Units</td><td>Units transported at room temperature</td><td class="num">5</td><td class="num">6</td></tr>
+      <tr><td class="num">Period-over-Period Volume %</td><td>Volume change vs 12-day baseline</td><td class="num">125.0</td><td class="num">87.5</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="weather">
+  <h2>Weather Risk by Corridor and Day</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Corridor</th>
+        <th>Day</th>
+        <th>Worst Waypoint</th>
+        <th>Risk Score</th>
+        <th>Heavy Rain</th>
+        <th>High Wind</th>
+        <th>Freezing Risk</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>NJ → Boston (I-95)</td>
+        <td>Day0</td>
+        <td>Newark NJ</td>
+        <td class="num">1</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td>NJ → Boston (I-95)</td>
+        <td>Day1</td>
+        <td>Providence RI</td>
+        <td class="num">2</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td>NJ → Philadelphia</td>
+        <td>Day0</td>
+        <td>Newark NJ</td>
+        <td class="num">1</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td>NJ → Philadelphia</td>
+        <td>Day1</td>
+        <td>Newark NJ</td>
+        <td class="num">0</td>
+        <td>No</td>
+        <td>No</td>
+        <td>No</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="allocation">
+  <h2>Dispatch Plan Summary & Resource Usage</h2>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="v">33</div>
+      <div class="l">Total Units Scheduled</div>
+    </div>
+    <div class="kpi">
+      <div class="v">0</div>
+      <div class="l">Unserved Units</div>
+    </div>
+    <div class="kpi">
+      <div class="v">Optimal</div>
+      <div class="l">Solver Status</div>
+    </div>
+  </div>
+  <h3>Resource Usage by Day</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Resource</th>
+        <th>Day0 Used / Available</th>
+        <th>Day1 Used / Available</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Drivers</td>
+        <td class="num">6 / 6</td>
+        <td class="num">6 / 6</td>
+      </tr>
+      <tr>
+        <td>Standard Trucks</td>
+        <td class="num">4 / 4</td>
+        <td class="num">4 / 4</td>
+      </tr>
+      <tr>
+        <td>Temp-Controlled Trucks</td>
+        <td class="num">2 / 2</td>
+        <td class="num">2 / 2</td>
+      </tr>
+      <tr>
+        <td>Standard Units</td>
+        <td class="num">5</td>
+        <td class="num">6</td>
+      </tr>
+      <tr>
+        <td>Cold Chain Units</td>
+        <td class="num">13</td>
+        <td class="num">9</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="audit">
+  <h2>Audit & Compliance Summary</h2>
+  <span class="badge danger">FAIL</span>
+  <div>High-severity failure: Weather-induced SLA breach on corridor C1_I95_NJ_BOS exceeds allowed transit time.</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Check</th>
+        <th>Status</th>
+        <th>Severity</th>
+        <th>Finding</th>
+        <th>Recommendation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Weather escalation threshold</td>
+        <td><span class="badge ok">PASS</span></td>
+        <td>info</td>
+        <td>No corridor reached a risk score of 3 within the 48-hour forecast window; therefore, no escalation actions are necessary at this time.</td>
+        <td>Maintain ongoing monitoring of weather forecasts to promptly detect any changes; no immediate action required.</td>
+      </tr>
+      <tr>
+        <td>Weather-induced SLA breach</td>
+        <td><span class="badge danger">FAIL</span></td>
+        <td>high</td>
+        <td>The weather buffer has caused the adjusted transit time for corridor C1_I95_NJ_BOS (Tier 1) to exceed the SLA cap: adjusted transit time is 6.25 hours versus the maximum allowed 6.0 hours, resulting in a negative headroom of 0.25 hours.</td>
+        <td>Within the next 2 hours, implement operational adjustments such as dispatching shipments earlier on Day 0, selecting an alternate corridor, or pre-positioning inventory to reduce transit exposure and bring transit time within SLA limits.</td>
+      </tr>
+      <tr>
+        <td>Cold-chain integrity</td>
+        <td><span class="badge ok">PASS</span></td>
+        <td>info</td>
+        <td>All cold-chain units scheduled for delivery are assigned to temperature-controlled trucks, ensuring cold-chain integrity is maintained throughout transit.</td>
+        <td>No action required; cold-chain protocols are fully adhered to.</td>
+      </tr>
+      <tr>
+        <td>Resource capacity math</td>
+        <td><span class="badge ok">PASS</span></td>
+        <td>info</td>
+        <td>Resource utilization for drivers, standard trucks, and temperature-controlled trucks remains within the available daily capacity limits.</td>
+        <td>No action required; resource allocation is within capacity.</td>
+      </tr>
+      <tr>
+        <td>SLA tier consistency</td>
+        <td><span class="badge ok">PASS</span></td>
+        <td>info</td>
+        <td>All assignments correctly match their SLA tier to the configured corridor tiers, ensuring consistency in service level agreements.</td>
+        <td>No action required.</td>
+      </tr>
+      <tr>
+        <td>Unserved high-priority units</td>
+        <td><span class="badge ok">PASS</span></td>
+        <td>info</td>
+        <td>There are no unserved Tier-1 or cold-chain units; all high-priority shipments are scheduled for delivery.</td>
+        <td>No action required.</td>
+      </tr>
+      <tr>
+        <td>Data-quality regeneration usage</td>
+        <td><span class="badge warn">WARN</span></td>
+        <td>low</td>
+        <td>Three planning-window rows lacked unique_item_id values and were assigned generated placeholder IDs following the GEN### format to enable processing.</td>
+        <td>Before Day 0 dispatch, reconcile these generated IDs with physical inventory records to ensure accuracy, and initiate an investigation into the upstream data source to prevent recurrence of missing IDs.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="footnote">
+    5 passed / 1 warned / 1 failed of 7 rules evaluated
+  </div>
+</section>
+
+<section class="dq">
+  <h2>Data Quality Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Reason Code</th>
+        <th>Count (History)</th>
+        <th>Count (Planning)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Exact Match</td>
+        <td class="num">74</td>
+        <td class="num">21</td>
+      </tr>
+      <tr>
+        <td>Alias Match</td>
+        <td class="num">20</td>
+        <td class="num">6</td>
+      </tr>
+      <tr>
+        <td>Generated Identifier</td>
+        <td class="num">2</td>
+        <td class="num">3</td>
+      </tr>
+      <tr>
+        <td>Legacy ID Map</td>
+        <td class="num">0</td>
+        <td class="num">3</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="appendix">
+  <h2>Appendix: Audit Trail of Special Data Rows</h2>
+  <details>
+    <summary>Generated Identifier Rows in Planning Data (3 rows)</summary>
+    <table>
+      <thead>
+        <tr>
+          <th>Generated UID</th>
+          <th>Canonical Item ID</th>
+          <th>Product Class</th>
+          <th>Corridor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>RMD-2026-GEN001</td>
+          <td>RMD-100</td>
+          <td>Antiviral</td>
+          <td>C1_I95_NJ_BOS</td>
+        </tr>
+        <tr>
+          <td>RMD-2026-GEN002</td>
+          <td>RMD-200</td>
+          <td>Antiviral</td>
+          <td>C1_I95_NJ_BOS</td>
+        </tr>
+        <tr>
+          <td>INS-2026-GEN001</td>
+          <td>INS-LIS</td>
+          <td>Endocrine</td>
+          <td>C2_NJ_PHL</td>
+        </tr>
+      </tbody>
+    </table>
+  </details>
+  <details>
+    <summary>Legacy ID Mappings (3 rows)</summary>
+    <table>
+      <thead>
+        <tr>
+          <th>Corridor</th>
+          <th>Legacy Item ID</th>
+          <th>Canonical Item ID</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>C1_I95_NJ_BOS</td>
+          <td class="num">99999</td>
+          <td>EXP-ONC-CT</td>
+          <td>Clinical trial placeholder ID; requires strict cold chain</td>
+        </tr>
+        <tr>
+          <td>C2_NJ_PHL</td>
+          <td class="num">1070</td>
+          <td>ALB-INH</td>
+          <td>Truncated ID found in older CSV exports</td>
+        </tr>
+        <tr>
+          <td>C2_NJ_PHL</td>
+          <td class="num">99999</td>
+          <td>EXP-ONC-CT</td>
+          <td>Clinical trial placeholder ID; requires strict cold chain</td>
+        </tr>
+      </tbody>
+    </table>
+  </details>
+  <details>
+    <summary>Alias Matches in Planning Data (6 rows)</summary>
+    <table>
+      <thead>
+        <tr>
+          <th>Corridor</th>
+          <th>Raw Name</th>
+          <th>Canonical Item ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>C1_I95_NJ_BOS</td>
+          <td>Pembrolizumab (Keytruda)</td>
+          <td>PMB-KEY</td>
+        </tr>
+        <tr>
+          <td>C2_NJ_PHL</td>
+          <td>Remdesivir 100 mg</td>
+          <td>RMD-100</td>
+        </tr>
+        <tr>
+          <td>C2_NJ_PHL</td>
+          <td>Heparin Na</td>
+          <td>HEP-SOD</td>
+        </tr>
+        <tr>
+          <td>C2_NJ_PHL</td>
+          <td>EpiPen Auto Injector</td>
+          <td>EPI-AI</td>
+        </tr>
+        <tr>
+          <td>C2_NJ_PHL</td>
+          <td>Morphine Sulphate</td>
+          <td>MOR-SUL</td>
+        </tr>
+        <tr>
+          <td>C2_NJ_PHL</td>
+          <td>Albuterol Inhaler 90mcg</td>
+          <td>ALB-INH</td>
+        </tr>
+      </tbody>
+    </table>
+  </details>
+</section>
+</body>
+</html>

@@ -12,8 +12,8 @@ chroma_db/
 *.sqlite
 *.db
 
-# generated reports
-output/
+# # generated reports
+# output/
 
 # macOS
 .DS_Store
