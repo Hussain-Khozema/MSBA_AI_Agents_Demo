@@ -51,8 +51,11 @@ layer)**, plus a working implementation of **A.5 unique_item_id regeneration**.
 
 
 
-Source: `[docs/architecture.puml](docs/architecture.puml)` (rendered PNG at
-`[docs/architecture.png](docs/architecture.png)`).
+<p align="center">
+  <img src="docs/architecture.png" alt="SeeWeeS multi-corridor dispatch architecture" width="640">
+</p>
+
+Source: [`docs/architecture.puml`](docs/architecture.puml) (rendered PNG at [`docs/architecture.png`](docs/architecture.png)).
 
 The pipeline is **not linear**. After ContextAgent extracts the playbook,
 three deterministic tools (ingest, weather, resources) run in **parallel**,
